@@ -9,9 +9,9 @@
         "enableRateLimit": true
     },
     "okex_future": {
-        "hostname": "okex.me",
+        "hostname": "okex.com",
         "urls": {
-            "www": "https://www.okex.me"
+            "www": "https://www.okex.com"
         },
         "enableRateLimit": true,
         "options": {
@@ -19,9 +19,9 @@
         }
     },
     "okex_spot": {
-        "hostname": "okex.me",
+        "hostname": "okex.com",
         "urls": {
-            "www": "https://www.okex.me"
+            "www": "https://www.okex.com"
         },
         "enableRateLimit": true
     }
