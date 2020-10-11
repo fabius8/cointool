@@ -1,0 +1,28 @@
+{
+    "binance_future": {
+        "enableRateLimit": true,
+        "options": {
+            "defaultType": "future"
+        }
+    },
+    "binance_spot": {
+        "enableRateLimit": true
+    },
+    "okex_future": {
+        "hostname": "okex.me",
+        "urls": {
+            "www": "https://www.okex.me"
+        },
+        "enableRateLimit": true,
+        "options": {
+            "defaultType": "futures"
+        }
+    },
+    "okex_spot": {
+        "hostname": "okex.me",
+        "urls": {
+            "www": "https://www.okex.me"
+        },
+        "enableRateLimit": true
+    }
+}
