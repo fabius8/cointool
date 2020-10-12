@@ -6,6 +6,7 @@ class Tradepair(models.Model):
     futureprice = models.FloatField(verbose_name="合约价格")
     spotprice = models.FloatField(verbose_name="现货价格")
     exchange = models.CharField(max_length=100, verbose_name="交易所")
-    fundRate = models.FloatField(verbose_name="资费(%)")
+    LastRate = models.FloatField(verbose_name="上期资费(%)")
+    fundRate = models.FloatField(verbose_name="本期资费(%)")
     sellSpread = models.FloatField(verbose_name="合约做空盈亏(%)")
     buySpread = models.FloatField(verbose_name="合约做多盈亏(%)")

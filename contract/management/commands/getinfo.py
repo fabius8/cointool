@@ -87,12 +87,9 @@ def update_okex_info():
             tradepair.spotprice = spread[3]
             tradepair.exchange = "okex"
             tradepair.fundRate = float("%.2f" % (float(fundingRate['estimated_rate']) * 100))
-            tradepair.sellSpread = float('%.3f' % spread[0])
-            tradepair.buySpread = float('%.3f' % spread[1])
-            if abs(tradepair.fundRate) <= 0.08 and tradepair.buySpread < 0.5 and tradepair.sellSpread < 0.5:
-                if result.exists():
-                    tradepair.delete()
-                continue
+            tradepair.LastRate = float("%.2f" % (float(fundingRate['funding_rate']) * 100))
+            tradepair.sellSpread = float('%.2f' % spread[0])
+            tradepair.buySpread = float('%.2f' % spread[1])
             tradepair.save()
             print(i)
 
@@ -118,13 +115,9 @@ def update_binance_info():
             tradepair.spotprice = spread[3]
             tradepair.exchange = "binance"
             tradepair.fundRate = float("%.2f" % (float(i['lastFundingRate']) * 100))
-            tradepair.sellSpread = float('%.3f' % spread[0])
-            tradepair.buySpread = float('%.3f' % spread[1])
-            if abs(tradepair.fundRate) <= 0.01 and tradepair.buySpread < 0.3 and tradepair.sellSpread < 0.3:
-                print(i['symbol'], "delete")
-                if result.exists():
-                    tradepair.delete()
-                continue
+            tradepair.LastRate = 0
+            tradepair.sellSpread = float('%.2f' % spread[0])
+            tradepair.buySpread = float('%.2f' % spread[1])
             tradepair.save()
     except Exception as err:
         print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), err)
