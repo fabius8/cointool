@@ -1,4 +1,5 @@
 from django.db import models
+import django_filters
 
 # Create your models here.
 class Tradepair(models.Model):
@@ -10,3 +11,9 @@ class Tradepair(models.Model):
     fundRate = models.FloatField(verbose_name="本期资费(%)")
     sellSpread = models.FloatField(verbose_name="合约做空盈亏(%)")
     buySpread = models.FloatField(verbose_name="合约做多盈亏(%)")
+
+class TradepairFilter(django_filters.FilterSet):
+    symbol = django_filters.CharFilter(lookup_expr='icontains')
+    class Meta:
+        model = Tradepair
+        fields = ['symbol']

@@ -1,5 +1,6 @@
 {# contract/templates/contract/pair.html #}
 {% load render_table from django_tables2 %}
+{% load bootstrap3 %}
 <!doctype html>
 <html>
     <head>
@@ -8,6 +9,14 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </head>
     <body>
+{% if filter %}
+    <form action="" method="get" class="form form-inline">
+	{% bootstrap_form filter.form layout='inline' %}
+        {% bootstrap_button 'search' %}
+    </form>
+{% endif %}
+        {% render_table filter.qs 'django_tables2/bootstrap.html' %}
+        {% render_table table0 %}
         {% render_table table1 %}
         {% render_table table2 %}
         {% render_table table3 %}
