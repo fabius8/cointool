@@ -15,9 +15,9 @@
         {% bootstrap_button 'search' %}
     </form>
 {% endif %}
+        {% render_table table1 %}
         {% render_table filter.qs 'django_tables2/bootstrap.html' %}
         {% render_table table0 %}
-        {% render_table table1 %}
         {% render_table table2 %}
         {% render_table table3 %}
     </body>

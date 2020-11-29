@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django_tables2',
     'contract',
     'livereload',
+    'django_filters',
+    'django_forms_bootstrap',
+    'bootstrap3',
+
 ]
 
 MIDDLEWARE = [
