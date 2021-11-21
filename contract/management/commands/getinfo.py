@@ -36,7 +36,6 @@ class Command(BaseCommand):
         count = 0
         while True:
             count = count + 1
-            update_fil_info()
             update_huobi_info()
             update_okex_info()
             update_binance_info()
@@ -86,7 +85,12 @@ def get_binance_spread_close(symbol, future, spot):
         order_book_A = future.fetch_order_book(symbol)
         bid0_A = order_book_A['bids'][0][0]
         ask0_A = order_book_A['asks'][0][0]
-        order_book_B = spot.fetch_order_book(symbol)
+        if "SHIB" in symbol:
+            bid0_A = bid0_A/1000
+            ask0_A = ask0_A/1000
+            order_book_B = spot.fetch_order_book("SHIB/USDT")
+        else:
+            order_book_B = spot.fetch_order_book(symbol)
         bid0_B = order_book_B['bids'][0][0]
         ask0_B = order_book_B['asks'][0][0]
     except Exception as err:
@@ -95,48 +99,13 @@ def get_binance_spread_close(symbol, future, spot):
         pass
     return (((bid0_A - ask0_B)/ask0_B*100), ((bid0_B - ask0_A)/ask0_A*100), bid0_A, bid0_B)
 
-def update_fil_info():
-    try:
-        okex_symbol = "FIL-USDT-SWAP"
-        binance_symbol = "FIL/USDT"
-        okex_fundingRate = okex_future.swapGetInstrumentsInstrumentIdFundingTime({'instrument_id': okex_symbol})
-        binance_fundingRate = binance_future.fapiPublicGetPremiumIndex()
-        for i in binance_fundingRate:
-            if i['symbol'] == "FILUSDT":
-                binance_fundingRate = float("%.2f" % (float(i['lastFundingRate']) * 100))
-
-        order_book_A = okex_future.fetch_order_book(okex_symbol)
-        bid0_A = order_book_A['bids'][0][0]
-        ask0_A = order_book_A['asks'][0][0]
-        order_book_B = binance_future.fetch_order_book(binance_symbol)
-        bid0_B = order_book_B['bids'][0][0]
-        ask0_B = order_book_B['asks'][0][0]
-        result = Tradepair.objects.filter(symbol="FIL", exchange="binance-okex")
-        if result.exists():
-            tradepair = Tradepair.objects.get(symbol="FIL", exchange="binance-okex")
-        else:
-            tradepair = Tradepair()
-        tradepair.symbol = "FIL"
-        tradepair.futureprice = bid0_B
-        tradepair.spotprice = bid0_A
-        tradepair.exchange = "binance-okex"
-        tradepair.fundRate = float("%.2f" % (float(okex_fundingRate['estimated_rate']) * 100))
-        tradepair.LastRate = binance_fundingRate
-        tradepair.sellSpread = float('%.2f' % ((bid0_A - ask0_B)/ask0_B*100))
-        tradepair.buySpread = float('%.2f' % ((bid0_B - ask0_A)/ask0_A*100))
-        tradepair.save()
-    except Exception as err:
-        print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), err)
-        pass
-        
-
 
 
 def update_okex_info():
     try:
         for i in swap:
             print(i, "start")
-            fundingRate = okex_future.swapGetInstrumentsInstrumentIdFundingTime({'instrument_id': i})
+            fundingRate = okex_future.publicGetPublicFundingRate({'instId': i})
             spread = get_okex_spread_close(i, okex_future, okex_spot)
             result = Tradepair.objects.filter(symbol=i, exchange="okex")
             if result.exists():
@@ -147,8 +116,8 @@ def update_okex_info():
             tradepair.futureprice = spread[2]
             tradepair.spotprice = spread[3]
             tradepair.exchange = "okex"
-            tradepair.fundRate = float("%.2f" % (float(fundingRate['estimated_rate']) * 100))
-            tradepair.LastRate = float("%.2f" % (float(fundingRate['funding_rate']) * 100))
+            tradepair.fundRate = float("%.2f" % (float(fundingRate['data'][0]['nextFundingRate']) * 100))
+            tradepair.LastRate = float("%.2f" % (float(fundingRate['data'][0]['fundingRate']) * 100))
             tradepair.sellSpread = float('%.2f' % spread[0])
             tradepair.buySpread = float('%.2f' % spread[1])
             tradepair.save()
